@@ -4,7 +4,7 @@ import { View } from 'react-native';
 
 function SignUp() {
     return (
-        <View><ThemedText>Sign Up</ThemedText></View>
+        <View><ThemedText>Sign up</ThemedText></View>
     );
 }
 
