@@ -4,7 +4,7 @@
     "slug": "MyFirstReactNativeApp",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/image.png",
     "scheme": "myfirstreactnativeapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -19,7 +19,8 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.anonymous.MyFirstReactNativeApp"
     },
     "web": {
       "output": "static",
@@ -30,15 +31,32 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash-icon.png",
-          "imageWidth": 200,
+          "image": "./assets/images/image.png",
+          "imageWidth": 400,
           "resizeMode": "contain",
-          "backgroundColor": "#ffffff",
+          "backgroundColor": "#000000",
           "dark": {
             "backgroundColor": "#000000"
           }
         }
-      ]
+      ],
+      [
+  "expo-font",
+  {
+     "fonts": [
+              {
+                "fontFamily": "Raleway",
+                "fontDefinitions": [
+                  {
+                    "path": "./assets/fonts/Raleway-Regular.ttf",
+                    "weight": 800
+                  }
+                ]
+              }
+            ]
+  }
+]
+
     ],
     "experiments": {
       "typedRoutes": true,
