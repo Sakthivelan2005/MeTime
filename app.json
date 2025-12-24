@@ -41,22 +41,22 @@
         }
       ],
       [
-  "expo-font",
-  {
-     "fonts": [
-              {
-                "fontFamily": "Raleway",
-                "fontDefinitions": [
-                  {
-                    "path": "./assets/fonts/Raleway-Regular.ttf",
-                    "weight": 800
-                  }
-                ]
-              }
-            ]
-  }
-]
-
+        "expo-font",
+        {
+          "fonts": [
+            {
+              "fontFamily": "Raleway",
+              "fontDefinitions": [
+                {
+                  "path": "./assets/fonts/Raleway-Regular.ttf",
+                  "weight": 800
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "@react-native-community/datetimepicker"
     ],
     "experiments": {
       "typedRoutes": true,

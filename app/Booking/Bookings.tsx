@@ -5,10 +5,12 @@ import { profiles } from '@/constants/profiles';
 import { timeSlots } from '@/constants/Timeslots';
 import { useLocalSearchParams } from 'expo-router';
 import React, { useState } from 'react';
+import CrossPlatformDatePicker from './datePicker';
 
 import {
     FlatList,
     Image,
+    Pressable,
     ScrollView,
     StyleSheet,
     TouchableOpacity,
@@ -19,15 +21,25 @@ export default function BookingScreen() {
 const {id} = useLocalSearchParams();
 const selected = profiles.find(i => i.id === Number(id));
 const today = new Date();
-const dd = String(today.getDate()).padStart(2, '0');  // "01".."31"
+const [day, setDay] = useState(
+  today.toLocaleString('en-US', { weekday: 'short' })
+);
 
-const [selectedDate, setSelectedDate] = useState(dd);
+const [month, setMonth] = useState(new Date().toLocaleString('en-US', { month: 'long' })); // e.g. "December"
+
+
+const [selectedDate, setSelectedDate] = useState(String(today.getDate()).padStart(2, '0'));
 const [selectedTime, setSelectedTime] = useState('1:30 pm');
+const [showPicker, setShowPicker] = useState(false);
 
 const dates = Array.from({ length: 7 }, (_, i) => ({
-    day: Number(dd) + i,
+    day: Number(selectedDate) + i,
     weekday: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][i],
 }));
+
+const handleDate = () => {
+    setShowPicker(true);
+};
 
 
 return (
@@ -51,6 +63,19 @@ return (
         {/* Date Picker */}
         <View style={styles.section}>
             <ThemedText type='24px' style={styles.sectionTitle}>Select date & time</ThemedText>
+            <View style={styles.DayMonthContainer}>
+            <ThemedText type='18px' style={styles.DayText}>Day</ThemedText>
+            <Pressable onPress={() => handleDate()}>
+            <ThemedText type='18px' style={styles.MonthText}>{`${month} >`}</ThemedText>
+            </Pressable>
+            {showPicker && (
+                <CrossPlatformDatePicker
+                setSelectedDate = {setSelectedDate}
+                setMonth={setMonth}
+                setDay={setDay}
+                onClose={() => setShowPicker(false)}
+                 />)}
+            </View>
             <FlatList
                 data={dates}
                 horizontal
@@ -60,7 +85,7 @@ return (
                     <TouchableOpacity
                         style={[
                             styles.dateButton,
-                            selectedDate === String(item.day) && styles.dateButtonSelected,
+                            selectedDate === String(item.day) &&  styles.dateButtonSelected,
                         ]}
                         onPress={() => setSelectedDate((String(item.day)))}
                     >
@@ -75,7 +100,7 @@ return (
                         <ThemedText  type='18px'
                          style={[
                             styles.weekday, 
-                            selectedDate === String(item.day) && styles.weekdaySelected
+                            day === String(item.day) && styles.weekdaySelected
                             ]}>
                              {item.weekday}
                             </ThemedText>
@@ -87,7 +112,7 @@ return (
 
         {/* Availability Grid */}
         <View style={styles.section}>
-            <ThemedText type='24px' style={styles.sectionTitle}>Availability</ThemedText>
+            <ThemedText type='18px' style={styles.Availability}>Availability</ThemedText>
             <View style={styles.timeGrid}>
                 {timeSlots.map((time) => (
                     <TouchableOpacity
@@ -121,7 +146,6 @@ return (
     </ScrollView>
 );
 }
-
 const styles = StyleSheet.create({
 container: {
     flex: 1,
@@ -168,7 +192,21 @@ section: {
 },
 sectionTitle: {
     marginBottom: 12,
+    textAlign: 'center'
 },
+DayMonthContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 12,
+},
+DayText: {
+    margin: 10,
+    left: 0
+},
+MonthText: {
+    margin: 10,
+    right: 0
+},  
 dateButton: {
     alignItems: 'center',
     paddingVertical: 12,
@@ -195,6 +233,9 @@ dayNumber: {
 },
 dayNumberSelected: {
     color: '#FDCCC5',
+},
+Availability: {
+    marginBottom: 12,
 },
 timeGrid: {
     flexDirection: 'row',
@@ -233,6 +274,7 @@ bookButton: {
     backgroundColor: '#FDCCC5',
     borderRadius: 12,
     alignSelf: 'center',
+    marginBottom: 20,
 },
 bookButtonThemedText: {
     textAlign: 'center',
