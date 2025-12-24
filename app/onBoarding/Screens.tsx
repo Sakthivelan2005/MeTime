@@ -21,7 +21,7 @@ export default function OnBoarding() {
   const [item, setItem] = React.useState('');
   const [professionals, setProfessionals] = React.useState('');
 
-  const isLogin = false
+  const isLogin = true
 
   const goToPage = (page: number) => {
     scrollRef.current?.scrollTo({ x: width * page, animated: true });
@@ -116,13 +116,11 @@ export default function OnBoarding() {
     },
     popupTitle: {
       textAlign: 'center',
-      fontSize: 24,
       fontWeight: 'bold',
       marginBottom: 8,
     },
     popupSubTitle: {
       textAlign: 'center',
-      fontSize: 16,
       marginBottom: 24,
     },
     loginButton: {
@@ -133,12 +131,10 @@ export default function OnBoarding() {
     },
     loginText: {
       color: '#fff',
-      fontSize: 16,
       fontWeight: 'bold',
     },
     createButton: {
       paddingVertical: 16,
-      fontSize: 16,
       textAlign: 'center',
       color: '#FDCCC5',
     },
@@ -170,9 +166,9 @@ export default function OnBoarding() {
           scrollEventThrottle={16}
         >
           {SCREENS.map((screen, i) => (
-            <View key={i} style={styles.page}>
+            <ScrollView key={i} style={styles.page}>
               {screen.component}
-            </View>
+            </ScrollView>
           ))}
         </ScrollView>
       </View>
@@ -182,10 +178,10 @@ export default function OnBoarding() {
         <>
           <View style={styles.dimOverlay} />
           <View style={styles.popup}>
-            <ThemedText type="title" style={styles.popupTitle}>
+            <ThemedText type="32px" style={styles.popupTitle}>
               Hey there!
             </ThemedText>
-            <ThemedText style={styles.popupSubTitle}>
+            <ThemedText type='18px' style={styles.popupSubTitle}>
               Before schedule, please enter your account or create one!
             </ThemedText>
 
@@ -193,7 +189,7 @@ export default function OnBoarding() {
               <Pressable
                 style={styles.loginButton}
               >
-                <ThemedText type="title" style={styles.loginText}>
+                <ThemedText type="16px" style={styles.loginText}>
                   Log In
                 </ThemedText>
               </Pressable>
@@ -201,7 +197,7 @@ export default function OnBoarding() {
 
             <Link href="/accounts/SignUp" asChild>
               <Pressable>
-                <ThemedText type="link" style={styles.createButton}>
+                <ThemedText type="16px" style={styles.createButton}>
                   Create Account
                 </ThemedText>
               </Pressable>

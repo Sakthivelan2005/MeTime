@@ -1,6 +1,6 @@
 // app/_layout.tsx
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import { DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { Stack, usePathname, useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useRef } from 'react';
@@ -28,7 +28,7 @@ export default function RootLayout() {
   }, [isOnboardingVisited, pathname]);
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+    <ThemeProvider value={ DefaultTheme}>
       <Stack>
         <Stack.Screen name="onBoarding/OnBoardingScreen" options={{ headerShown: false }} />
         <Stack.Screen name="onBoarding/Screens" options={{presentation: 'modal', title: AppTitle, headerTitleAlign:'center', headerTitleStyle: {fontWeight: 'bold'} }} />
@@ -37,8 +37,7 @@ export default function RootLayout() {
         <Stack.Screen name='accounts/Login' options={{title: AppTitle,  headerTitleAlign:'center'}} />
         <Stack.Screen name='accounts/SignUp' options={{title: AppTitle,  headerTitleAlign:'center'}} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal'}} />
-        <Stack.Screen name='Bookings' options={{title:''}} />
+         <Stack.Screen name="Booking/Bookings" options={{ title: '' }} />
       </Stack>
       <StatusBar style='dark' />
     </ThemeProvider>

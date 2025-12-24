@@ -19,14 +19,19 @@ const slides = [
 const BackHeigth = height/1.5;
 const WomenHeigth = height/2.5;
 const womenPosition = height/6;
-const BoxWidth = width/2;
-const titlePosition = height/3.5;
-const titleSize = 30%height;
+const BoxWidth = width/2.2;
+const titlePosition = height/3.8;
 
 const subtitlePosition =  height/5;
-const subtitleSize = 20%height;
 
 const Styles = StyleSheet.create({
+  container:{
+    margin: 20,
+    padding: 30,
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   titleContainer: {
     fontSize: 20,
     top: 40,
@@ -51,7 +56,6 @@ const Styles = StyleSheet.create({
     zIndex:1
   },
   titile:{
-    fontSize: titleSize,
     lineHeight: 40,
     bottom:titlePosition,
     textAlign:'center',
@@ -62,23 +66,23 @@ const Styles = StyleSheet.create({
     textAlign:'center',
     position: 'absolute',
     bottom: subtitlePosition,
-    fontSize: subtitleSize,
-    fontWeight: 'normal'
+    fontWeight: 'normal',
+    color: '#7A7A7A'
   },
   skipLink:{
     bottom: 50,
     width: BoxWidth,
     height:70,
     left: 20,
-    fontSize: 20,
     position:'absolute',
     justifyContent:'center'
    
   },
   skipText:{
     color:'#FDCCC5',
-    fontWeight: 'normal',
-    left: 50
+    fontWeight: 'bold',
+    textAlign:'center',
+    fontSize: 20,
   },
   startLink:{
    backgroundColor:'#FDCCC5',
@@ -93,7 +97,8 @@ const Styles = StyleSheet.create({
   start:{
     fontSize: 20,
     textAlign:'center',
-    color:'white'
+    color:'white',
+    fontWeight:'bold'
   }
 });
 
@@ -110,19 +115,21 @@ const Styles = StyleSheet.create({
         source={slides[0].background}
         />
         </View>
+        <View style={Styles.container}>
         <ThemedText 
          style={Styles.titile}
-         type='title'>{slides[0].title}</ThemedText>
+         type='32px'>{slides[0].title}</ThemedText>
          <ThemedText 
          style={Styles.subtitle}
-        type='subtitle'>{slides[0].subtitle}</ThemedText>
-          
-          <Link href="/(tabs)" asChild>
-          <View style={Styles.skipLink}>
-            <ThemedText
-            style={Styles.skipText}
-            type="subtitle" >skip</ThemedText>
+        type='18px'>{slides[0].subtitle}</ThemedText>
           </View>
+          <Link href="/(tabs)" asChild>
+           <Pressable>
+          <View style={Styles.skipLink}>            
+            <ThemedText
+            style={Styles.skipText} >skip</ThemedText>
+          </View>
+          </Pressable>
         </Link>
          <Link href="/onBoarding/Screens" asChild>
          <Pressable style={Styles.startLink}>
