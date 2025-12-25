@@ -1,12 +1,18 @@
 import { ThemedText } from '@/components/themed-text';
 import { Images } from '@/config/Images';
+import { Months } from '@/constants/date';
 import { disabledTimes } from '@/constants/disabledTimes';
 import { profiles } from '@/constants/profiles';
 import { timeSlots } from '@/constants/Timeslots';
-import { useLocalSearchParams } from 'expo-router';
-import React, { useState } from 'react';
-import CrossPlatformDatePicker from './datePicker';
-
+import { addDays } from '@/hooks/addDays';
+import { formatDate } from '@/hooks/formatDate';
+import { getDaysDiff } from '@/hooks/getDaysDifferent';
+import { getWeekday } from '@/hooks/getWeekDay';
+import { getYesterday } from '@/hooks/getYesterday';
+import { useUniversalDate } from '@/hooks/useUniversalDate';
+import { format } from 'date-fns';
+import { Link, useLocalSearchParams } from 'expo-router';
+import React, { useEffect, useRef, useState } from 'react';
 import {
     FlatList,
     Image,
@@ -14,28 +20,44 @@ import {
     ScrollView,
     StyleSheet,
     TouchableOpacity,
+    useWindowDimensions,
     View,
 } from 'react-native';
+import CrossPlatformDatePicker from './datePicker';
 
 export default function BookingScreen() {
+const {width, height} = useWindowDimensions();
 const {id} = useLocalSearchParams();
 const selected = profiles.find(i => i.id === Number(id));
-const today = new Date();
-const [day, setDay] = useState(
-  today.toLocaleString('en-US', { weekday: 'short' })
-);
+const today = format(new Date(), 'MM/dd/yyyy');
 
-const [month, setMonth] = useState(new Date().toLocaleString('en-US', { month: 'long' })); // e.g. "December"
-
-
-const [selectedDate, setSelectedDate] = useState(String(today.getDate()).padStart(2, '0'));
+const [month, setMonth] = useState(Months[Number(formatDate(String(today)).substring(0,2)) - 1]); // e.g. "December"
+console.log("Today: ", today)
+const [selectedDate, setSelectedDate] = useState(today); // e.g. "05/31/2024"
 const [selectedTime, setSelectedTime] = useState('1:30 pm');
 const [showPicker, setShowPicker] = useState(false);
+const dateListRef =  useRef<FlatList>(null);
+const [dates, setDates] = useState<{day: string, weekday: string}[]>([]);
 
-const dates = Array.from({ length: 7 }, (_, i) => ({
-    day: Number(selectedDate) + i,
-    weekday: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][i],
+useEffect(() => {
+  const index = dates.findIndex(item => item.day === selectedDate);
+  if (index > -1 && dateListRef.current) {
+    dateListRef.current.scrollToIndex({ index, animated: true });
+  }
+}, [selectedDate, dates]);
+
+console.log("date",useUniversalDate(selectedDate).formatted)
+const length = getDaysDiff(selectedDate,format(getYesterday(), "MM/dd/yyyy")) > 7? getDaysDiff(selectedDate, format(getYesterday(), "MM/dd/yyyy")) : 7;
+
+useEffect(() => {
+setDates(Array.from({ length: length}, (_, i) => {
+  const dayCount = (addDays( today, i));
+  return {
+    day: dayCount,
+    weekday:  getWeekday(dayCount), // Get weekday name
+  };
 }));
+},[selectedDate]);
 
 const handleDate = () => {
     setShowPicker(true);
@@ -72,42 +94,47 @@ return (
                 <CrossPlatformDatePicker
                 setSelectedDate = {setSelectedDate}
                 setMonth={setMonth}
-                setDay={setDay}
                 onClose={() => setShowPicker(false)}
                  />)}
             </View>
-            <FlatList
-                data={dates}
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                keyExtractor={(item) => item.day.toString()}
-                renderItem={({ item }) => (
-                    <TouchableOpacity
-                        style={[
-                            styles.dateButton,
-                            selectedDate === String(item.day) &&  styles.dateButtonSelected,
-                        ]}
-                        onPress={() => setSelectedDate((String(item.day)))}
-                    >
-                         <ThemedText type='24px'
-                            style={[
-                                styles.dayNumber,
-                                selectedDate === String(item.day) && styles.dayNumberSelected,
-                            ]}
-                        >
-                            {item.day}
-                        </ThemedText>
-                        <ThemedText  type='18px'
-                         style={[
-                            styles.weekday, 
-                            day === String(item.day) && styles.weekdaySelected
-                            ]}>
-                             {item.weekday}
-                            </ThemedText>
-                       
-                    </TouchableOpacity>
-                )}
-            />
+<FlatList
+  ref={dateListRef}
+  data={dates}
+  horizontal
+  showsHorizontalScrollIndicator={false}
+  keyExtractor={(_, index) => index.toString()}
+  getItemLayout={(_, index) => ({
+  length: width * 0.22,  // 22% screen width per item
+  offset: (width * 0.22) * index,
+  index
+})}
+  renderItem={({ item, index }) => (
+    <TouchableOpacity
+      style={[
+        styles.dateButton,
+        selectedDate === item.day && styles.dateButtonSelected,
+      ]}
+      onPress={() => {
+        setSelectedDate(item.day);
+        setMonth(Months[Number(formatDate(item.day).substring(0,2)) - 1]);
+        dateListRef.current?.scrollToIndex({index, animated: true});
+      }}
+    >
+      <ThemedText type='24px' style={[
+        styles.dayNumber,
+        selectedDate === item.day && styles.dayNumberSelected
+      ]}>
+        {item.day.substring(3,5)}
+      </ThemedText>
+      <ThemedText type='18px' style={[
+        styles.weekday, 
+        selectedDate === item.day && styles.weekdaySelected
+      ]}>
+        {item.weekday}
+      </ThemedText>
+    </TouchableOpacity>
+  )}
+/>
         </View>
 
         {/* Availability Grid */}
@@ -140,9 +167,17 @@ return (
         </View>
 
         {/* Book Button */}
+
+    <Link href={{
+        pathname:"/Booking/BookingConfirm",
+        params: {
+            date: selectedDate,
+             time: selectedTime
+             }}} asChild>      
         <TouchableOpacity style={styles.bookButton}>
             <ThemedText type='18px' style={styles.bookButtonThemedText}>Book</ThemedText>
         </TouchableOpacity>
+    </Link>
     </ScrollView>
 );
 }
@@ -152,7 +187,8 @@ container: {
     backgroundColor: '#fff',
     paddingLeft: 20,
     paddingTop: 20,
-    paddingBottom: 20,
+    paddingBottom: 40,
+
 
 },
 header: {
@@ -185,6 +221,7 @@ ratingContainer: {
 },
 rating: {
     textAlign: 'center',
+    color: "#000",
 },
 section: {
     paddingHorizontal: 16,
@@ -201,11 +238,13 @@ DayMonthContainer: {
 },
 DayText: {
     margin: 10,
-    left: 0
+    left: 0,
+    color: '#414040ff'
 },
 MonthText: {
     margin: 10,
-    right: 0
+    right: 0,
+    color: '#414040ff'
 },  
 dateButton: {
     alignItems: 'center',
@@ -236,6 +275,7 @@ dayNumberSelected: {
 },
 Availability: {
     marginBottom: 12,
+    color: '#414040ff'
 },
 timeGrid: {
     flexDirection: 'row',
@@ -274,7 +314,7 @@ bookButton: {
     backgroundColor: '#FDCCC5',
     borderRadius: 12,
     alignSelf: 'center',
-    marginBottom: 20,
+    marginBottom: 90,
 },
 bookButtonThemedText: {
     textAlign: 'center',

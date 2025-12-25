@@ -3,25 +3,23 @@ import { Images } from '@/config/Images';
 import { need } from '@/constants/need';
 import { Image } from 'expo-image';
 import React from 'react';
-import { Dimensions, Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, useWindowDimensions, View } from 'react-native';
 
 type NeedsProps = {
-    service: string,
-    setItem: (value: string) => void,
-    goToPage: (value: number) => void;
-    
-}
+  service: string;
+  setItem: (value: string) => void;
+  goToPage: (value: number) => void;
+};
 
-function Needs({service,setItem,goToPage}:NeedsProps) {
+function Needs({ service, setItem, goToPage }: NeedsProps) {
+    const {width} = useWindowDimensions();
 
-    const {width} = Dimensions.get('window');
-
-  const styles = StyleSheet.create(
+ const styles = StyleSheet.create(
     {
         title:{
             fontSize: 30,
             padding:20,
-            textAlign: 'center' 
+            textAlign: 'center'
         },
         needsImage:{
             height:100,
@@ -40,47 +38,54 @@ function Needs({service,setItem,goToPage}:NeedsProps) {
         },
         boxPressed:{
             backgroundColor: '#FDCCC540',
-            
+           
         },
         arrow:{
             width: 30,
             height: 20,
             left: width - 180,
-            
+           
             justifyContent: 'center',
             alignItems: 'flex-end'
         }
     },
-    
-) 
-    const Need = need.map((i) => {
-        return (
-         <Pressable key={i.id} style={({ pressed }) => [
-          styles.box,
-          pressed && styles.boxPressed, // "hover-like" state while finger is down
-            ]}
-          onPress={() => {setItem(i.name); goToPage(2) }}
-            >            
-                <Image style={styles.needsImage} source={i.image} />
-                <Image style={styles.arrow} source={Images.Arrow} />
-        
-                <View>
-                    <ThemedText type='16px' style={styles.text}>{i.name}</ThemedText>
-                    <ThemedText style={styles.text}>${i.price}</ThemedText>
-                </View>
-                </Pressable>
-        )
-    })
-    return (
-        <View >
-            <ThemedText type="24px" style={styles.title}>Now, choose one that fit your needs:</ThemedText>
-            <ThemedText>You selected: {service}</ThemedText>
-           <View> {Need} </View>
-           
-        </View>
-    );
+   
+)
+
+  const NeedItems = need.map((item) => (
+    <Pressable
+      key={item.id}
+      style={({ pressed }) => [
+        styles.box,
+        pressed && styles.boxPressed,
+      ]}
+      onPress={() => {
+        setItem(item.name);
+        goToPage(2);
+      }}
+    >
+      <Image style={styles.needsImage} source={item.image} />
+      <View style={{ marginLeft: 15, flex: 1 }}>
+        <ThemedText type="16px" style={styles.text}>
+          {item.name}
+        </ThemedText>
+        <ThemedText style={styles.text}>${item.price}</ThemedText>
+      </View>
+      <Image style={styles.arrow} source={Images.Arrow} />
+    </Pressable>
+  ));
+
+  return (
+    <View style={{ flex: 1 }}>
+      <ThemedText type="24px" style={styles.title}>
+        Now, choose one that fit your needs:
+      </ThemedText>
+      <ThemedText>
+        You selected: {service || 'None'}
+      </ThemedText>
+      <View style={{ flex: 1, paddingHorizontal: 10 }}>{NeedItems}</View>
+    </View>
+  );
 }
-
-
 
 export default Needs;

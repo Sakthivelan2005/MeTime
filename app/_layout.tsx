@@ -37,7 +37,9 @@ export default function RootLayout() {
         <Stack.Screen name='accounts/Login' options={{title: AppTitle,  headerTitleAlign:'center'}} />
         <Stack.Screen name='accounts/SignUp' options={{title: AppTitle,  headerTitleAlign:'center'}} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-         <Stack.Screen name="Booking/Bookings" options={{ title: '' }} />
+        <Stack.Screen name="Booking/Bookings" options={{ title: '' }} />
+        <Stack.Screen name="Booking/BookingConfirm" options={{ title: ''}} />
+
       </Stack>
       <StatusBar style='dark' />
     </ThemeProvider>

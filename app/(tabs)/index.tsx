@@ -18,10 +18,11 @@ export default function HomeScreen() {
         />
       }>
       <ThemedView style={styles.titleContainer}>
-         <Link href="/Bookings" asChild><ThemedText type="32px">Hi Pavin Anna!</ThemedText></Link>
+         <Link href="/Booking/Bookings" asChild><ThemedText type="32px">Hi Pavin Anna!</ThemedText></Link>
         <HelloWave />
       </ThemedView>
       <ThemedView style={styles.stepContainer}>
+        
         <ThemedText type="18px">Step 1: Try it</ThemedText>
         <ThemedText>
           Edit <ThemedText type="24px">app/(tabs)/index.tsx</ThemedText> to see changes.
