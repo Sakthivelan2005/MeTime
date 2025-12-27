@@ -1,8 +1,11 @@
 // app/_layout.tsx
 import { DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import * as NavigationBar from 'expo-navigation-bar';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { useEffect } from 'react';
 import 'react-native-reanimated';
+
 
 export const unstable_settings = {
   anchor: '(tabs)',
@@ -10,6 +13,19 @@ export const unstable_settings = {
 
 export default function RootLayout() {
   const AppTitle = "MeTime";
+
+
+
+  useEffect(() => {
+    const setupNavBar = async () => {
+      // Hide nav bar initially
+      await NavigationBar.setVisibilityAsync('hidden');
+    };
+    setupNavBar();
+  }, []);
+
+
+
 
   return (
     <ThemeProvider value={ DefaultTheme}>
@@ -23,6 +39,7 @@ export default function RootLayout() {
         <Stack.Screen name='accounts/SignUp' options={{title: AppTitle,  headerTitleAlign:'center'}} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="Booking/Bookings" options={{ title: '' }} />
+        <Stack.Screen name="Booking/BookingsScreen" options={{ title: 'MeTime', headerTitleAlign: 'center' }} />
         <Stack.Screen name="Booking/BookingConfirm" options={{ title: ''}} />
 
       </Stack>

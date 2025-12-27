@@ -4,7 +4,7 @@ import { profiles } from '@/constants/profiles';
 import { CreateButton } from '@/hooks/Button';
 import { useUniversalDate } from '@/hooks/useUniversalDate';
 import { Image } from 'expo-image';
-import { useLocalSearchParams } from 'expo-router';
+import { Link, useLocalSearchParams } from 'expo-router';
 import React from 'react';
 import { StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 
@@ -42,6 +42,9 @@ const BookingConfirm = () => {
     textAlign: 'center',
     marginBottom: height/30,
   },
+  details:{
+    color: '#000'
+  },
   location:{
     textDecorationLine: 'underline',
     color: "#000",
@@ -59,11 +62,13 @@ const BookingConfirm = () => {
       </View>
       <ThemedText type="24px" style={styles.Message}>Thank you for booking with <Text style={styles.MeTime}>MeTime</Text></ThemedText>
      
-     <ThemedText type='18px'>Your Booking Details</ThemedText>
-     <ThemedText type='18px'>{formattedDate}        {time}</ThemedText>
-     <ThemedText type='18px'>At {selected?.shop} </ThemedText>
+     <ThemedText type='18px' style={styles.details}>Your Booking Details</ThemedText>
+     <ThemedText type='18px' style={styles.details}>{formattedDate}        {time}</ThemedText>
+     <ThemedText type='18px' style={styles.details}>At {selected?.shop} </ThemedText>
      <ThemedText type='32px' style={styles.location}>At {selected?.location} </ThemedText>     
+     <Link  href={'/Booking/BookingsScreen'} asChild>
      {CreateButton("Keep Booking")}
+     </Link>
      <ThemedText type='link' style={styles.link}>Main Page</ThemedText>
     </View>
   )
