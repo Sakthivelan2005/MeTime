@@ -1,11 +1,20 @@
 import { ThemedText } from '@/components/themed-text';
 import { Images } from '@/config/Images';
 import { Image } from 'expo-image';
-import { Link } from 'expo-router';
+import { Link, Redirect } from 'expo-router';
+import { useState } from 'react';
 import { Pressable, StyleSheet, View, useWindowDimensions } from 'react-native';
 
 function OnBoardingScreen() {
 const {width, height} = useWindowDimensions();
+
+  const [showTabs, setShowTabs] = useState(false);
+
+  // Once user finished onboarding in this session → go to tabs
+  if (showTabs) {
+    return <Redirect href="/(tabs)" />;
+  }
+
   
 const slides = [
     {
@@ -123,7 +132,7 @@ const Styles = StyleSheet.create({
          style={Styles.subtitle}
         type='18px'>{slides[0].subtitle}</ThemedText>
           </View>
-          <Link href="/(tabs)" asChild>
+          <Link href="/(tabs)" onPress={() => setShowTabs(true)} asChild>
            <Pressable>
           <View style={Styles.skipLink}>            
             <ThemedText
@@ -131,7 +140,7 @@ const Styles = StyleSheet.create({
           </View>
           </Pressable>
         </Link>
-         <Link href="/onBoarding/Screens" asChild>
+         <Link href="/onBoarding/Screens" onPress={() => setShowTabs(true)} asChild>
          <Pressable style={Styles.startLink}>
             <ThemedText style={Styles.start}>start</ThemedText>
         </Pressable>

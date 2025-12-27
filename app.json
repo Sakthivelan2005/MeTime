@@ -43,17 +43,7 @@
       [
         "expo-font",
         {
-          "fonts": [
-            {
-              "fontFamily": "Raleway",
-              "fontDefinitions": [
-                {
-                  "path": "./assets/fonts/Raleway-Regular.ttf",
-                  "weight": 800
-                }
-              ]
-            }
-          ]
+          "fonts": []
         }
       ],
       "@react-native-community/datetimepicker"
@@ -61,6 +51,12 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "1d597375-d397-4a00-9c57-9829b6566031"
+      }
     }
   }
 }

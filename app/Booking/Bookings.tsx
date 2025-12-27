@@ -9,7 +9,6 @@ import { formatDate } from '@/hooks/formatDate';
 import { getDaysDiff } from '@/hooks/getDaysDifferent';
 import { getWeekday } from '@/hooks/getWeekDay';
 import { getYesterday } from '@/hooks/getYesterday';
-import { useUniversalDate } from '@/hooks/useUniversalDate';
 import { format } from 'date-fns';
 import { Link, useLocalSearchParams } from 'expo-router';
 import React, { useEffect, useRef, useState } from 'react';
@@ -46,7 +45,6 @@ useEffect(() => {
   }
 }, [selectedDate, dates]);
 
-console.log("date",useUniversalDate(selectedDate).formatted)
 const length = getDaysDiff(selectedDate,format(getYesterday(), "MM/dd/yyyy")) > 7? getDaysDiff(selectedDate, format(getYesterday(), "MM/dd/yyyy")) : 7;
 
 useEffect(() => {
@@ -92,6 +90,7 @@ return (
             </Pressable>
             {showPicker && (
                 <CrossPlatformDatePicker
+                selectedDate={selectedDate}
                 setSelectedDate = {setSelectedDate}
                 setMonth={setMonth}
                 onClose={() => setShowPicker(false)}
@@ -172,7 +171,8 @@ return (
         pathname:"/Booking/BookingConfirm",
         params: {
             date: selectedDate,
-             time: selectedTime
+             time: selectedTime,
+            id: selected?.id,
              }}} asChild>      
         <TouchableOpacity style={styles.bookButton}>
             <ThemedText type='18px' style={styles.bookButtonThemedText}>Book</ThemedText>
