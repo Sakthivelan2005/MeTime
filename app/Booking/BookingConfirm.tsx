@@ -1,5 +1,6 @@
 import { ThemedText } from '@/components/themed-text';
 import { Images } from '@/config/Images';
+import { needs } from '@/constants/need';
 import { profiles } from '@/constants/profiles';
 import { CreateButton } from '@/hooks/Button';
 import { useUniversalDate } from '@/hooks/useUniversalDate';
@@ -10,8 +11,8 @@ import { StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 
 const BookingConfirm = () => {
   const {width, height} = useWindowDimensions();
-   const{date, time, id} = useLocalSearchParams();
-   
+   const{date, time, id, item} = useLocalSearchParams();
+   const selectedItem = needs.find((i)=> i.id === Number(item))
    const selected = profiles.find(i => i.id === Number(id));
    const formattedDate = `${useUniversalDate(String(date)).weekday}, ${useUniversalDate(String(date)).dayNumber}`;
  const styles = StyleSheet.create({
@@ -26,7 +27,7 @@ const BookingConfirm = () => {
   },
   ImageContainer: {
     width: width,
-    height: width/1.5,
+    height: width/2,
   },
   Image:{
     width: width/3.5,
@@ -64,9 +65,13 @@ const BookingConfirm = () => {
      
      <ThemedText type='18px' style={styles.details}>Your Booking Details</ThemedText>
      <ThemedText type='18px' style={styles.details}>{formattedDate}        {time}</ThemedText>
+     <ThemedText type='18px' style={styles.details}>You Booking for  {selectedItem?.name} </ThemedText>     
      <ThemedText type='18px' style={styles.details}>At {selected?.shop} </ThemedText>
      <ThemedText type='32px' style={styles.location}>At {selected?.location} </ThemedText>     
-     <Link  href={'/Booking/BookingsScreen'} asChild>
+     <Link  href={{
+      pathname: "/onBoarding/Screens",
+      params: {Date: formattedDate, time: time, item: item, shop: selected?.shop, location: selected?.location, page: 3}
+     }} asChild>
      {CreateButton("Keep Booking")}
      </Link>
      <ThemedText type='link' style={styles.link}>Main Page</ThemedText>

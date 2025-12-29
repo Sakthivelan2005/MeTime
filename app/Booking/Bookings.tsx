@@ -26,8 +26,8 @@ import CrossPlatformDatePicker from './datePicker';
 
 export default function BookingScreen() {
 const {width, height} = useWindowDimensions();
-const {id} = useLocalSearchParams();
-const selected = profiles.find(i => i.id === Number(id));
+const {ProfileId, itemId} = useLocalSearchParams();
+const selected = profiles.find(i => i.id === Number(ProfileId));
 const today = format(new Date(), 'MM/dd/yyyy');
 
 const [month, setMonth] = useState(Months[Number(formatDate(String(today)).substring(0,2)) - 1]); // e.g. "December"
@@ -173,6 +173,7 @@ return (
             date: selectedDate,
              time: selectedTime,
             id: selected?.id,
+            item: itemId
              }}} asChild>      
         <TouchableOpacity style={styles.bookButton}>
             <ThemedText type='18px' style={styles.bookButtonThemedText}>Book</ThemedText>
