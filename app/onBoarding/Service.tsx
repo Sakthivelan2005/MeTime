@@ -12,7 +12,7 @@ type ServiceProps = {
 
 function Service({setService, goToPage}:ServiceProps) {
 
-  const {width} =  useWindowDimensions();
+  const {width, height} =  useWindowDimensions();
   const ImageSize = width/3;
   const Styles = StyleSheet.create({
   screen:{
@@ -51,7 +51,8 @@ function Service({setService, goToPage}:ServiceProps) {
    skipLink:{
     fontWeight: 'normal',
     textAlign:'center',
-    top: 100,
+    top: height/10,
+    fontSize: 24
   }
 });
 
@@ -69,7 +70,7 @@ function Service({setService, goToPage}:ServiceProps) {
         <View style={Styles.screen}>
             <ThemedText type='24px' style={Styles.subtitle}>Please, Choose a Service:</ThemedText>
            <View style={Styles.gridContainer}>{Services}</View>
-           <Link href="/(tabs)" asChild>
+           <Link href="/(tabs)/Index" asChild>
                        <ThemedText 
                        style={Styles.skipLink}
                        type="link" >skip</ThemedText>

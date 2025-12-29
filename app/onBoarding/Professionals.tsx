@@ -7,10 +7,14 @@ import { Pressable, StyleSheet, useWindowDimensions, View } from 'react-native';
 
 type professionalsProps = {
   professionals: string;
+  service: string | undefined;
+  item: number;
   setProfessionals: (value: string) => void;
 }
-export default function Professionals({setProfessionals}:professionalsProps) {
+export default function Professionals({service, item, setProfessionals}:professionalsProps) {
   
+const SelectedProfile = profiles.filter((item)=> service === item.Service.find((i)=> i === service) )
+console.log("filter: ",SelectedProfile)
 const { width, height } = useWindowDimensions();
 const styles = StyleSheet.create({
     screen: {
@@ -59,11 +63,11 @@ const styles = StyleSheet.create({
       padding: 30
     }
 })
-const Profiles =  profiles.map((i) => {
+const Profiles =  SelectedProfile.map((i) => {
   return(
     <Link href={{
       pathname:"/Booking/Bookings",
-      params: { id: i.id}
+      params: { ProfileId: i.id, itemId: item}
     }} 
       key={i.id}
       style={styles.container}

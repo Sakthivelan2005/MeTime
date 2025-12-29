@@ -1,13 +1,16 @@
-import { ThemedText } from '@/components/themed-text';
-import { Link } from 'expo-router';
-import React from 'react';
+import { useNavigation } from '@react-navigation/native';
+import * as NavigationBar from 'expo-navigation-bar';
+import { useLocalSearchParams } from 'expo-router';
+import React, { useEffect, useState } from 'react';
 import {
   Dimensions,
-  Pressable,
   ScrollView,
   StyleSheet,
-  View,
+  View
 } from 'react-native';
+import AddPaymentMethodScreen from '../payment/AddPaymentMethodScreen';
+import CheckoutScreen from './CheckoutScreen';
+import LoginPopup from './LoginPopup';
 import Needs from './Needs';
 import Professionals from './Professionals';
 import Service from './Service';
@@ -18,15 +21,54 @@ export default function OnBoarding() {
   const [index, setIndex] = React.useState(0);
   const scrollRef = React.useRef<ScrollView>(null);
   const [service, setService] = React.useState('');
-  const [item, setItem] = React.useState('');
+  const [item, setItem] = React.useState(0);
   const [professionals, setProfessionals] = React.useState('');
-
+  const [page, setPage] = React.useState(0)
+ 
   const isLogin = true
+  const [showPopup, setShowPopup] = useState(false);
 
+  const params = useLocalSearchParams();
+  console.log("page",index)
   const goToPage = (page: number) => {
     scrollRef.current?.scrollTo({ x: width * page, animated: true });
     setIndex(page);
   };
+  
+  useEffect(()=>{
+    goToPage(page);
+  },[page])
+
+   useEffect(() => {
+    if (params.page) {
+      setPage(Number(params.page)); // Sets page to 4
+    }
+  }, [params.page]);
+   const navigation = useNavigation();
+  
+    useEffect(() => {
+      if(index === 3){
+        navigation.setOptions({
+        title: 'Checkout',
+        headerTitleAlign: 'center',
+      });
+    }
+    else{
+      navigation.setOptions({
+        title: 'MeTime',
+        headerTitleAlign: 'center',
+      });
+    }
+    }, [index]);
+
+   useEffect(() => {
+      const setupNavBar = async () => {
+        // Hide nav bar initially
+        await NavigationBar.setVisibilityAsync('hidden');   
+      };
+      setupNavBar();
+    }, []);
+  
 
   const SCREENS = [
     {
@@ -55,8 +97,21 @@ export default function OnBoarding() {
       name: 'Professionals',
       component: (
         <Professionals
+          service={service}
           professionals={professionals}
           setProfessionals={setProfessionals}
+          item={item}
+        />
+      ),
+    },
+    {
+      id: '3',
+      name: 'CheckOut',
+      component: (
+        <CheckoutScreen 
+        setShowPopup = {setShowPopup}
+        page={page}
+        
         />
       ),
     },
@@ -114,30 +169,7 @@ export default function OnBoarding() {
       shadowOffset: { width: 0, height: -4 },
       elevation: 10,
     },
-    popupTitle: {
-      textAlign: 'center',
-      fontWeight: 'bold',
-      marginBottom: 8,
-    },
-    popupSubTitle: {
-      textAlign: 'center',
-      marginBottom: 24,
-    },
-    loginButton: {
-      backgroundColor: '#FDCCC5',
-      paddingVertical: 16,
-      alignItems: 'center',
-      borderRadius: 10,
-    },
-    loginText: {
-      color: '#fff',
-      fontWeight: 'bold',
-    },
-    createButton: {
-      paddingVertical: 16,
-      textAlign: 'center',
-      color: '#FDCCC5',
-    },
+
   });
 
   return (
@@ -178,33 +210,21 @@ export default function OnBoarding() {
         <>
           <View style={styles.dimOverlay} />
           <View style={styles.popup}>
-            <ThemedText type="32px" style={styles.popupTitle}>
-              Hey there!
-            </ThemedText>
-            <ThemedText type='18px' style={styles.popupSubTitle}>
-              Before schedule, please enter your account or create one!
-            </ThemedText>
-
-            <Link href="/accounts/Login" asChild>
-              <Pressable
-                style={styles.loginButton}
-              >
-                <ThemedText type="16px" style={styles.loginText}>
-                  Log In
-                </ThemedText>
-              </Pressable>
-            </Link>
-
-            <Link href="/accounts/SignUp" asChild>
-              <Pressable>
-                <ThemedText type="16px" style={styles.createButton}>
-                  Create Account
-                </ThemedText>
-              </Pressable>
-            </Link>
+            <LoginPopup />
           </View>
         </>
-      )}
+      )
+     }
+      {showPopup && (
+        <>
+          <View style={styles.dimOverlay} />
+          <View style={styles.popup}>
+             <AddPaymentMethodScreen 
+              setShowPopup={setShowPopup}/>
+          </View>
+        </>
+      )
+      }
     </View>
   );
 }

@@ -1,19 +1,20 @@
 import { ThemedText } from '@/components/themed-text';
 import { Images } from '@/config/Images';
-import { need } from '@/constants/need';
+import { needs } from '@/constants/need';
 import { Image } from 'expo-image';
 import React from 'react';
 import { Pressable, StyleSheet, useWindowDimensions, View } from 'react-native';
 
 type NeedsProps = {
   service: string;
-  setItem: (value: string) => void;
+  setItem: (value: number) => void;
   goToPage: (value: number) => void;
 };
 
 function Needs({ service, setItem, goToPage }: NeedsProps) {
-    const {width} = useWindowDimensions();
-
+  const {width} = useWindowDimensions();
+  const SelectService = needs.filter((item) => item.type === service);
+  
  const styles = StyleSheet.create(
     {
         title:{
@@ -52,7 +53,7 @@ function Needs({ service, setItem, goToPage }: NeedsProps) {
    
 )
 
-  const NeedItems = need.map((item) => (
+  const NeedItems = SelectService.map((item) => (
     <Pressable
       key={item.id}
       style={({ pressed }) => [
@@ -60,7 +61,7 @@ function Needs({ service, setItem, goToPage }: NeedsProps) {
         pressed && styles.boxPressed,
       ]}
       onPress={() => {
-        setItem(item.name);
+        setItem(item.id);
         goToPage(2);
       }}
     >
