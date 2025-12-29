@@ -5,5 +5,8 @@ export const Images = {
     Arrow: require('../assets/images/Onboarding/needs/long-arrow-right.png'),
     heart: require('../assets/images/Booking/heart.png'),
     loading: require('../assets/images/Booking/loading.gif'),
-    cancel: require('../assets/images/Booking/cancel.png')
+    cancel: require('../assets/images/Booking/cancel.png'),
+    card: require("@/assets/images/payment/card.svg"),
+    Mastercard: require("@/assets/images/payment/Master Card.svg"),
+    
 };

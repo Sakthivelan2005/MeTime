@@ -2,7 +2,7 @@ export  const services = [
         {
             id: 1,
             serviceImage: require('../assets/images/Onboarding/services/Eyebrows.jpg'),
-            serviceName: 'Eyebrows'
+            serviceName: 'Eyebrow'
         },
         {
             id: 2,
