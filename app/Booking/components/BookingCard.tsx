@@ -1,18 +1,7 @@
 import { ThemedText } from '@/components/themed-text';
+import type { Booking } from '@/data/BookingDetails';
 import React from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
-
-export type Booking = {
-  id: string;
-  salonName: string;
-  stylistName: string;
-  distanceKm: number;
-  serviceDetails: string;
-  date: string;
-  price: number;
-  isUpcoming: boolean;
-};
-
 function formatDateLabel(iso: string) {
   const d = new Date(iso);
   return d.toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
@@ -21,8 +10,8 @@ function formatDateLabel(iso: string) {
 const BookingCard: React.FC<{ booking: Booking; onPressCancel?: (id: string) => void }> = ({ booking, onPressCancel }) => {
   return (
     <View style={styles.card}>
-      <ThemedText style={styles.salonName}>{booking.salonName}</ThemedText>
-      <ThemedText style={styles.secondLine}>{`with ${booking.stylistName} · ${booking.distanceKm} Kms`}</ThemedText>
+      <ThemedText style={styles.salonName}>{booking.shop}</ThemedText>
+      <ThemedText style={styles.secondLine}>{`with ${booking.person} · ${booking.distanceKm} Kms`}</ThemedText>
       <ThemedText style={styles.serviceDetails}>{booking.serviceDetails}</ThemedText>
       <ThemedText style={styles.datePrice}>{`${formatDateLabel(booking.date)} · $${booking.price}`}</ThemedText>
       {booking.isUpcoming && (

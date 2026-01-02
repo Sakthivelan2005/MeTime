@@ -1,7 +1,7 @@
+import type { Booking } from '@/data/BookingDetails';
 import React from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
-import BookingCard, { Booking } from '../components/BookingCard';
-
+import BookingCard from '../components/BookingCard';
 const Past: React.FC<{ bookings: Booking[] }> = ({ bookings }) => {
   return (
     <View style={styles.page}>

@@ -1,39 +1,28 @@
 import { ThemedText } from '@/components/themed-text';
 import { Images } from '@/config/Images';
+import { SAMPLE_BOOKINGS, type Booking } from '@/data/BookingDetails';
 import { Image } from 'expo-image';
 import React, { useMemo, useRef, useState } from 'react';
 import {
-    FlatList,
-    Modal,
-    Pressable,
-    StyleSheet,
-    TouchableOpacity,
-    View,
-    useWindowDimensions,
+  FlatList,
+  Modal,
+  Pressable,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+  useWindowDimensions,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { SAMPLE_BOOKINGS } from '@/constants/BookingDetails';
-
-const ACCENT = '#ED7354';
+const ACCENT = color;
 const LIGHT_GRAY = '#9aa0a6';
-
-type Booking = {
-  id: string;
-  salonName: string;
-  stylistName: string;
-  distanceKm: number;
-  serviceDetails: string;
-  date: string; // ISO date string
-  price: number;
-  isUpcoming: boolean;
-};
 
 function formatDateLabel(iso: string) {
   const d = new Date(iso);
   return d.toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
 }
 
+import { color } from '@/constants/color';
 import Past from './sections/Past';
 import Upcoming from './sections/Upcoming';
 
@@ -50,9 +39,7 @@ const BookingsScreen: React.FC<{ navigation?: any }> = ({ navigation }) => {
   const flatRef = useRef<FlatList<any> | null>(null);
   const { width } = useWindowDimensions();
 
-  function handleBack() {
-    if (navigation?.goBack) navigation.goBack();
-  }
+
 
   function openCancelModal(id: string) {
     setSelectedId(id);

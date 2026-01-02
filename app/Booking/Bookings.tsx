@@ -2,9 +2,10 @@ import { ThemedText } from '@/components/themed-text';
 import { Images } from '@/config/Images';
 import { Months } from '@/constants/date';
 import { disabledTimes } from '@/constants/disabledTimes';
-import { profiles } from '@/constants/profiles';
 import { timeSlots } from '@/constants/Timeslots';
+import { profiles } from '@/data/profiles';
 import { addDays } from '@/hooks/addDays';
+import { CreateButton } from '@/hooks/Button';
 import { formatDate } from '@/hooks/formatDate';
 import { getDaysDiff } from '@/hooks/getDaysDifferent';
 import { getWeekday } from '@/hooks/getWeekDay';
@@ -23,7 +24,7 @@ import {
     View,
 } from 'react-native';
 import CrossPlatformDatePicker from './datePicker';
-
+const Theme = '#ff9fb5';
 export default function BookingScreen() {
 const {width, height} = useWindowDimensions();
 const {ProfileId, itemId} = useLocalSearchParams();
@@ -43,7 +44,7 @@ useEffect(() => {
   if (index > -1 && dateListRef.current) {
     dateListRef.current.scrollToIndex({ index, animated: true });
   }
-}, [selectedDate, dates]);
+}, [selectedDate]);
 
 const length = getDaysDiff(selectedDate,format(getYesterday(), "MM/dd/yyyy")) > 7? getDaysDiff(selectedDate, format(getYesterday(), "MM/dd/yyyy")) : 7;
 
@@ -167,17 +168,17 @@ return (
 
         {/* Book Button */}
 
-    <Link href={{
+    <Link 
+    style={styles.button}
+    href={{
         pathname:"/Booking/BookingConfirm",
         params: {
             date: selectedDate,
              time: selectedTime,
             id: selected?.id,
             item: itemId
-             }}} asChild>      
-        <TouchableOpacity style={styles.bookButton}>
-            <ThemedText type='18px' style={styles.bookButtonThemedText}>Book</ThemedText>
-        </TouchableOpacity>
+             }}} asChild>     
+            {CreateButton("Book")}
     </Link>
     </ScrollView>
 );
@@ -257,7 +258,7 @@ dateButton: {
     borderWidth:2
 },
 dateButtonSelected: {
-    borderColor: '#FDCCC5',
+    borderColor: Theme,
     borderWidth: 2,
 },
 weekday: {
@@ -265,14 +266,14 @@ weekday: {
     color: '#7A7A7A',
 },
 weekdaySelected: {
-    color: '#FDCCC5',
+    color: Theme,
 },
 dayNumber: {
     marginTop: 3,
     color: '#7A7A7A',
 },
 dayNumberSelected: {
-    color: '#FDCCC5',
+    color: Theme,
 },
 Availability: {
     marginBottom: 12,
@@ -295,7 +296,7 @@ timeSlot: {
     borderColor: '#e0e0e0',
 },
 timeSlotSelected: {
-    borderColor: '#FDCCC5',
+    borderColor: Theme,
 },
 timeSlotDisabled: {
     opacity: 0.4,
@@ -304,22 +305,12 @@ timeThemedText: {
     color: '#7A7A7A',
 },
 timeThemedTextSelected: {
-    color: '#FDCCC5',
+    color: Theme,
 },
 timeThemedTextDisabled: {
     color: '#999',
 },
-bookButton: {
-    paddingVertical: 15,
-    width: '90%',
-    backgroundColor: '#FDCCC5',
-    borderRadius: 12,
-    alignSelf: 'center',
-    marginBottom: 90,
-},
-bookButtonThemedText: {
-    textAlign: 'center',
-    color: '#fff',
-    fontWeight: 'bold',
-},
+button : {
+    marginBottom: 100
+}
 });

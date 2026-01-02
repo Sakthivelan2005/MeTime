@@ -1,7 +1,7 @@
 import { ThemedText } from '@/components/themed-text';
 import { Images } from '@/config/Images';
-import { needs } from '@/constants/need';
-import { profiles } from '@/constants/profiles';
+import { needs } from '@/data/need';
+import { profiles } from '@/data/profiles';
 import { CreateButton } from '@/hooks/Button';
 import { useUniversalDate } from '@/hooks/useUniversalDate';
 import { Image } from 'expo-image';
