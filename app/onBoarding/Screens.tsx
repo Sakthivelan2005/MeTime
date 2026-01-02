@@ -1,3 +1,4 @@
+import { color } from '@/constants/color';
 import { useNavigation } from '@react-navigation/native';
 import * as NavigationBar from 'expo-navigation-bar';
 import { useLocalSearchParams } from 'expo-router';
@@ -29,7 +30,7 @@ export default function OnBoarding() {
   const [showPopup, setShowPopup] = useState(false);
 
   const params = useLocalSearchParams();
-  console.log("page",index)
+  console.log("service bool",service === "")
   const goToPage = (page: number) => {
     scrollRef.current?.scrollTo({ x: width * page, animated: true });
     setIndex(page);
@@ -124,13 +125,22 @@ export default function OnBoarding() {
     },
     container: {
       flex: 1,
+      alignItems: 'center'
     },
-    page: { width },
+    page: {
+       width,
+       marginTop: 40
+
+    },
     dotsContainer: {
-      marginTop: 60,
+      position: 'absolute',
+      marginTop: 30,
       alignItems: 'center',
       justifyContent: 'center',
       flexDirection: 'row',
+      zIndex: 1,
+      backgroundColor:"#fff",
+      borderRadius: 20
     },
     dot: {
       width: 15,
@@ -141,7 +151,7 @@ export default function OnBoarding() {
     },
     dotActive: {
       width: 55,
-      backgroundColor: '#ff9fb5',
+      backgroundColor: color,
       borderRadius: 10,
     },
 

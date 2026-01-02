@@ -1,5 +1,6 @@
 import { ThemedText } from '@/components/themed-text';
 import { Images } from '@/config/Images';
+import { color } from '@/constants/color';
 import { Image } from 'expo-image';
 import { Link, Redirect } from 'expo-router';
 import { useState } from 'react';
@@ -88,13 +89,13 @@ const Styles = StyleSheet.create({
    
   },
   skipText:{
-    color:'#FDCCC5',
+    color: color,
     fontWeight: 'bold',
     textAlign:'center',
     fontSize: 20,
   },
   startLink:{
-   backgroundColor:'#FDCCC5',
+   backgroundColor:color,
     width: BoxWidth, 
     height:70,
     right: 20,

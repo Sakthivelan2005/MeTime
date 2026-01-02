@@ -1,9 +1,10 @@
 import { ThemedText } from '@/components/themed-text';
 import { Images } from '@/config/Images';
-import { needs } from '@/constants/need';
+import { needs } from '@/data/need';
 import { Image } from 'expo-image';
 import React from 'react';
 import { Pressable, StyleSheet, useWindowDimensions, View } from 'react-native';
+import { empty } from './empty';
 
 type NeedsProps = {
   service: string;
@@ -14,7 +15,7 @@ type NeedsProps = {
 function Needs({ service, setItem, goToPage }: NeedsProps) {
   const {width} = useWindowDimensions();
   const SelectService = needs.filter((item) => item.type === service);
-  
+  console.log("service: ", service)
  const styles = StyleSheet.create(
     {
         title:{
@@ -48,11 +49,11 @@ function Needs({ service, setItem, goToPage }: NeedsProps) {
            
             justifyContent: 'center',
             alignItems: 'flex-end'
-        }
+        },
+       
     },
    
 )
-
   const NeedItems = SelectService.map((item) => (
     <Pressable
       key={item.id}
@@ -71,20 +72,19 @@ function Needs({ service, setItem, goToPage }: NeedsProps) {
           {item.name}
         </ThemedText>
         <ThemedText style={styles.text}>${item.price}</ThemedText>
+        <Image source={Images.Arrow} style={styles.arrow} />
       </View>
-      <Image style={styles.arrow} source={Images.Arrow} />
     </Pressable>
   ));
 
+console.log("sel",SelectService)
   return (
     <View style={{ flex: 1 }}>
       <ThemedText type="24px" style={styles.title}>
         Now, choose one that fit your needs:
       </ThemedText>
-      <ThemedText>
-        You selected: {service || 'None'}
-      </ThemedText>
-      <View style={{ flex: 1, paddingHorizontal: 10 }}>{NeedItems}</View>
+     
+      <View style={{ flex: 1, paddingHorizontal: 10 }}>{(service === "")? (empty("Please Choose a service")) : (NeedItems) }</View>
     </View>
   );
 }

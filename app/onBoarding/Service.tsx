@@ -1,5 +1,5 @@
 import { ThemedText } from '@/components/themed-text';
-import { services } from '@/constants/services';
+import { services } from '@/data/services';
 import { Image } from 'expo-image';
 import { Link } from 'expo-router';
 import React from 'react';

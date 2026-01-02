@@ -1,9 +1,10 @@
 import { ThemedText } from '@/components/themed-text';
 import { Images } from '@/config/Images';
-import { profiles } from '@/constants/profiles';
+import { profiles } from '@/data/profiles';
 import { Image } from 'expo-image';
 import { Link } from 'expo-router';
 import { Pressable, StyleSheet, useWindowDimensions, View } from 'react-native';
+import { empty } from './empty';
 
 type professionalsProps = {
   professionals: string;
@@ -14,7 +15,6 @@ type professionalsProps = {
 export default function Professionals({service, item, setProfessionals}:professionalsProps) {
   
 const SelectedProfile = profiles.filter((item)=> service === item.Service.find((i)=> i === service) )
-console.log("filter: ",SelectedProfile)
 const { width, height } = useWindowDimensions();
 const styles = StyleSheet.create({
     screen: {
@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
     }
 })
 const Profiles =  SelectedProfile.map((i) => {
-  return(
+  return (
     <Link href={{
       pathname:"/Booking/Bookings",
       params: { ProfileId: i.id, itemId: item}
@@ -97,8 +97,13 @@ const Profiles =  SelectedProfile.map((i) => {
   return (
     <View style={styles.screen}>
       <ThemedText type='24px' style={styles.title}>Choose a professional e see the slots available</ThemedText>
-      {Profiles}
+      {(service === "")? (empty("Please Choose a service")) :(
+        <>
+        {(item <= 0)? (empty("Please select any one service")): (Profiles)}
       <ThemedText type='link' style={styles.link}>I don't have a preference</ThemedText>
+      </>
+      )
+    }
     </View>
   );
 }

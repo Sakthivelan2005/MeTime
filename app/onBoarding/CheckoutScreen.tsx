@@ -1,13 +1,15 @@
 import { ThemedText } from '@/components/themed-text';
-import { needs } from '@/constants/need';
+import { color } from '@/constants/color';
+import { needs } from '@/data/need';
 import { CreateButton } from '@/hooks/Button';
 import { Link, useLocalSearchParams } from 'expo-router';
 import React from 'react';
 import { Alert, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { usePayment } from '../payment/PaymentContext';
+import { empty } from './empty';
 
-const ACCENT = '#F6A6A6';
+const ACCENT = color;
 type Props = {
   setShowPopup: (value: boolean) => void;
   page: number;
@@ -17,16 +19,23 @@ export default function CheckoutScreen({ setShowPopup, page }: Props) {
   const selected = cards.find(c => c.id === selectedCardId) ?? null;
   const {Date, time, item, shop, location} = useLocalSearchParams();
   const selectedItem = needs.find((i) => i.id === Number(item))
+  console.log("need", needs)
+  console.log("select: ", selectedItem)
   function onBook() {
     Alert.alert('Booked', 'Your appointment has been booked.');
   }
-
+  console.log("check: ", (Date === undefined && time === undefined && item === undefined && shop === undefined && location === undefined)
+)
+ console.log("Date: ", Date, "time", time, "item: ", item ,"Shop", shop, "location", location )
  
   return (
     <SafeAreaView style={styles.safe}>
       
 
-      <View style={styles.content}>
+     {(Date === undefined && time === undefined && item === undefined && shop === undefined && location === undefined)? 
+     (empty("Please Book any one item to view Checkouts.")) : 
+     (
+       <View style={styles.content}>
         
         <ThemedText type='24px' style={styles.mainText}>Please check the details and confirm your appointment</ThemedText>
 
@@ -63,10 +72,10 @@ export default function CheckoutScreen({ setShowPopup, page }: Props) {
           </View>
         </View>
 
-      <Link href={'/Booking/BookingsScreen'} onPress={onBook} asChild>
+      <Link href={'/Booking/BookingsScreen'} onPress={() => onBook} asChild>
           {CreateButton("Book")}
         </Link>
-      </View>
+      </View>)}
     </SafeAreaView>
   );
 }
@@ -85,9 +94,8 @@ const styles = StyleSheet.create({
   row: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 8, borderBottomWidth: 0 },
   rowLabel: { color: '#666' },
   rowValue: { color: '#111', fontWeight: '600', },
-  link: { color: ACCENT, textDecorationLine: 'underline', fontWeight: '600' },
+  link: { color: ACCENT, textDecorationLine: 'underline', fontWeight: 'bold' },
   total: { color: '#111', fontSize: 16, fontWeight: '800' },
   payment:{textDecorationLine: 'underline', color: "#000", fontWeight: 'bold'},
-  bookButton: { marginTop: 20, backgroundColor: ACCENT, borderRadius: 10, paddingVertical: 14, alignItems: 'center' },
-  bookButtonText: { color: '#fff', fontWeight: '700' },
+ 
 });
