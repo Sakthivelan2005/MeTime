@@ -1,8 +1,10 @@
 import { ThemedText } from '@/components/themed-text';
+import { Icons } from '@/config/icons';
 import { Images } from '@/config/Images';
 import { options } from '@/constants/paymentOption';
+import { CreateButton } from '@/hooks/Button';
 import { Image } from 'expo-image';
-import { useRouter } from 'expo-router';
+import { Link, useRouter } from 'expo-router';
 import React from 'react';
 import { FlatList, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -19,7 +21,7 @@ export default function AddPaymentMethodScreen({setShowPopup}:Props) {
   return (
     <SafeAreaView style={styles.safe}>
         <View style={styles.header}>
-        <TouchableOpacity onPress={() => setShowPopup(false)} style={styles.back}><ThemedText type='32px'>X</ThemedText></TouchableOpacity>
+        <TouchableOpacity onPress={() => setShowPopup(false)} style={styles.back}>{Icons.cross}</TouchableOpacity>
         <ThemedText style={styles.title}>Add payment method</ThemedText>
       </View>
 
@@ -46,9 +48,9 @@ export default function AddPaymentMethodScreen({setShowPopup}:Props) {
           </TouchableOpacity>
         ))}
 
-        <TouchableOpacity style={styles.addCardRow} onPress={() => router.push('/payment/AddCardScreen')}>
-          <ThemedText style={styles.addCardText}>+ Add Card</ThemedText>
-        </TouchableOpacity>
+        <Link href={'/payment/AddCardScreen'} asChild> 
+          {CreateButton("+ Add Card")}
+        </Link> 
       </View>
     </SafeAreaView>
   );
