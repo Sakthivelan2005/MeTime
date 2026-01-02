@@ -1,10 +1,11 @@
 import { ThemedText } from '@/components/themed-text'
+import { color } from '@/constants/color'
 import React from 'react'
 import { StyleSheet, TouchableOpacity } from 'react-native'
 
-export const CreateButton = (ButtonName: string) => {
+export const CreateButton = (ButtonName: string,) => {
   return (
-     <TouchableOpacity style={styles.bookButton}>
+     <TouchableOpacity style={styles.bookButton} >
                 <ThemedText type='18px' style={styles.bookButtonThemedText}>{ButtonName}</ThemedText>
       </TouchableOpacity>
   )
@@ -15,7 +16,7 @@ const styles = StyleSheet.create({
   bookButton: {
     paddingVertical: 15,
     width: '90%',
-    backgroundColor: '#FDCCC5',
+    backgroundColor: color,
     borderRadius: 12,
     alignSelf: 'center',
 },
