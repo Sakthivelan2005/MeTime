@@ -8,6 +8,7 @@ export const Images = {
     cancel: require('../assets/images/Booking/cancel.png'),
     card: require("@/assets/images/payment/card.svg"),
     Mastercard: require("@/assets/images/payment/Master Card.svg"),
-    empty: require('@/assets/gif/Empty.gif')
+    empty: require('@/assets/gif/Empty.gif'),
+    profile: require("@/assets/images/profile.png")
     
 };
