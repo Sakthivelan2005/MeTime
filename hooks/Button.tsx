@@ -3,7 +3,7 @@ import { color } from '@/constants/color'
 import React from 'react'
 import { StyleSheet, View } from 'react-native'
 
-export const CreateButton = (ButtonName: string,) => {
+export const CreateButton = (ButtonName: string) => {
   return (
     <>
      <View style={styles.bookButton} >

@@ -1,6 +1,6 @@
 // @/hooks/useUniversalDate.ts
 import { parse, parseISO } from 'date-fns';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { formatDate } from './formatDate';
 
 interface UniversalDate {
@@ -11,6 +11,37 @@ interface UniversalDate {
   monthName: string;
   isValid: boolean;
 }
+
+
+interface UseDateToISO {
+  (dateStr: string, timeStr: string): string;
+}
+
+export const useDateToISO = (): UseDateToISO => {
+  return useCallback((dateStr: string, timeStr: string): string => {
+    // Parse MM/DD/YYYY -> [month, day, year]
+    const parts = dateStr.split('/').map(Number);
+    if (parts.length !== 3) return '';
+    
+    const month = parts[0] - 1;  // MM -> 0-based
+    const day = parts[1];        // DD
+    const year = parts[2];       // YYYY
+    
+    // Parse time "3:00 pm"
+    const timeMatch = timeStr.match(/(\d{1,2}):(\d{2})\s*(am|pm)/i);
+    if (!timeMatch || isNaN(month) || isNaN(day) || isNaN(year)) return '';
+    
+    let [, hourStr, minStr, period] = timeMatch;
+    let hour = parseInt(hourStr, 10);
+    const min = parseInt(minStr, 10);
+    
+    if (period.toLowerCase() === 'pm' && hour !== 12) hour += 12;
+    if (period.toLowerCase() === 'am' && hour === 12) hour = 0;
+    
+    const date = new Date(year, month, day, hour, min);
+    return isNaN(date.getTime()) ? '' : date.toISOString();
+  }, []);
+};
 
 export const useUniversalDate = (dateInput: string): UniversalDate => {
   return useMemo(() => {
