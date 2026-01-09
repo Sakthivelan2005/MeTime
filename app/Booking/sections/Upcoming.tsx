@@ -1,6 +1,7 @@
+import { Booking } from '@/data/BookingDetails';
 import React from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
-import BookingCard, { Booking } from '../components/BookingCard';
+import BookingCard from '../components/BookingCard';
 
 const Upcoming: React.FC<{ bookings: Booking[]; onPressCancel?: (id: string) => void }> = ({ bookings, onPressCancel }) => {
   return (

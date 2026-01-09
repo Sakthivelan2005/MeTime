@@ -1,45 +1,70 @@
 import { ThemedText } from '@/components/themed-text';
+import { Icons } from '@/config/icons';
 import { Images } from '@/config/Images';
+import { color } from '@/constants/color';
 import { SAMPLE_BOOKINGS, type Booking } from '@/data/BookingDetails';
 import { Image } from 'expo-image';
-import React, { useMemo, useRef, useState } from 'react';
+import { router, Stack, useLocalSearchParams } from 'expo-router';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   FlatList,
   Modal,
   Pressable,
   StyleSheet,
   TouchableOpacity,
-  View,
   useWindowDimensions,
+  View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Past from './sections/Past';
+import Upcoming from './sections/Upcoming';
 
 const ACCENT = color;
 const LIGHT_GRAY = '#9aa0a6';
 
-function formatDateLabel(iso: string) {
-  const d = new Date(iso);
-  return d.toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
-}
-
-import { color } from '@/constants/color';
-import Past from './sections/Past';
-import Upcoming from './sections/Upcoming';
-
-const BookingsScreen: React.FC<{ navigation?: any }> = ({ navigation }) => {
+const BookingsScreen: React.FC<{ navigation?: any }> = () => {
   const [bookings, setBookings] = useState<Booking[]>(SAMPLE_BOOKINGS);
   const [activeTab, setActiveTab] = useState<'Past' | 'Upcoming'>('Upcoming');
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
-
+  
+  // Receive booking from CheckoutScreen
+  const { bookingJson } = useLocalSearchParams<{ bookingJson: string }>();
+  
+  console.log("received booking: ", bookingJson)
   const pastBookings = useMemo(() => bookings.filter(b => !b.isUpcoming), [bookings]);
   const upcomingBookings = useMemo(() => bookings.filter(b => b.isUpcoming), [bookings]);
 
-  const data = activeTab === 'Past' ? pastBookings : upcomingBookings;
   const flatRef = useRef<FlatList<any> | null>(null);
   const { width } = useWindowDimensions();
 
-
+  const goBack = () =>{
+    router.push('/Home')
+  }
+  // Add incoming booking from CheckoutScreen
+  useEffect(() => {
+    if (bookingJson) {
+      try {
+        const newBooking: Booking = JSON.parse(bookingJson);
+        
+        // Prepend to bookings list (newest first)
+        setBookings(prev => [newBooking, ...prev]);
+        
+        // Clear param to prevent duplicate adds
+        
+        console.log('Added new booking:', newBooking.id);
+      } catch (error) {
+        console.error('Failed to parse bookingJson:', error);
+      }
+    }
+  }, [bookingJson]);
+  // Existing: Update lastId for CheckoutScreen
+  useEffect(() => {
+    const lastBookingId = bookings.findLast((item) => item.id)?.id;
+    if (lastBookingId) {
+      router.setParams({ lastId: lastBookingId });
+    }
+  }, [bookings]);
 
   function openCancelModal(id: string) {
     setSelectedId(id);
@@ -53,18 +78,31 @@ const BookingsScreen: React.FC<{ navigation?: any }> = ({ navigation }) => {
 
   function confirmCancel() {
     if (!selectedId) return closeModal();
-    setBookings(prev => prev.map(b => (b.id === selectedId ? { ...b, isUpcoming: false } : b)).filter(b => b.id !== selectedId || !b.isUpcoming));
-    // Remove the booking from upcoming list by filtering it out
-    setBookings(prev => prev.filter(b => b.id !== selectedId));
+    
+    // Move to past OR remove completely
+    setBookings(prev => 
+      prev.map(b => 
+        b.id === selectedId ? { ...b, isUpcoming: false } : b
+      )
+    );
+    
     closeModal();
   }
 
   return (
+    <>
+    <Stack.Screen options={{
+      headerLeft: () => (
+        <TouchableOpacity onPress={goBack} >
+          <ThemedText>{Icons.leftArrow}</ThemedText>
+        </TouchableOpacity>
+      ),
+      title: "MeTime",
+      headerTitleAlign: 'center'
+    }} /> 
     <SafeAreaView style={styles.safe}>
-      
-
       <View style={styles.container}>
-      <ThemedText style={styles.sectionTitle}>Your Bookings</ThemedText>
+        <ThemedText style={styles.sectionTitle}>Your Bookings</ThemedText>
 
         <View style={styles.tabsRow}>
           <TouchableOpacity
@@ -74,7 +112,9 @@ const BookingsScreen: React.FC<{ navigation?: any }> = ({ navigation }) => {
               setActiveTab('Past');
             }}
           >
-            <ThemedText style={[styles.tabLabel, activeTab === 'Past' ? styles.tabLabelActive : styles.tabLabelInactive]}>Past</ThemedText>
+            <ThemedText style={[styles.tabLabel, activeTab === 'Past' ? styles.tabLabelActive : styles.tabLabelInactive]}>
+              Past
+            </ThemedText>
             <View style={[styles.tabUnderline, activeTab === 'Past' ? styles.underlineActive : styles.underlineInactive]} />
           </TouchableOpacity>
 
@@ -85,7 +125,9 @@ const BookingsScreen: React.FC<{ navigation?: any }> = ({ navigation }) => {
               setActiveTab('Upcoming');
             }}
           >
-            <ThemedText style={[styles.tabLabel, activeTab === 'Upcoming' ? styles.tabLabelActive : styles.tabLabelInactive]}>Upcoming</ThemedText>
+            <ThemedText style={[styles.tabLabel, activeTab === 'Upcoming' ? styles.tabLabelActive : styles.tabLabelInactive]}>
+              Upcoming
+            </ThemedText>
             <View style={[styles.tabUnderline, activeTab === 'Upcoming' ? styles.underlineActive : styles.underlineInactive]} />
           </TouchableOpacity>
         </View>
@@ -98,13 +140,13 @@ const BookingsScreen: React.FC<{ navigation?: any }> = ({ navigation }) => {
           showsHorizontalScrollIndicator={false}
           keyExtractor={item => item}
           initialScrollIndex={activeTab === 'Upcoming' ? 1 : 0}
-          getItemLayout={(_, index) => ({ length: width, offset: width * index, index })}
+          getItemLayout={(_, index) => ({ length: width, offset: width/1.1 * index, index })}
           onMomentumScrollEnd={e => {
             const index = Math.round(e.nativeEvent.contentOffset.x / width);
             setActiveTab(index === 0 ? 'Past' : 'Upcoming');
           }}
           renderItem={({ item }) => (
-            <View style={{ width, paddingHorizontal: 16, paddingTop: 0 }}>
+            <View style={{ width: width/1.1}}>
               {item === 'Past' ? (
                 <Past bookings={pastBookings} />
               ) : (
@@ -123,7 +165,8 @@ const BookingsScreen: React.FC<{ navigation?: any }> = ({ navigation }) => {
             </View>
 
             <ThemedText style={styles.modalTitle}>
-              Are you sure, you want to <ThemedText style={styles.accentText}>cancel</ThemedText> this appointment?
+              Are you sure, you want to{' '}
+              <ThemedText style={styles.accentText}>cancel</ThemedText> this appointment?
             </ThemedText>
 
             <View style={styles.modalButtonsRow}>
@@ -139,15 +182,15 @@ const BookingsScreen: React.FC<{ navigation?: any }> = ({ navigation }) => {
         </View>
       </Modal>
     </SafeAreaView>
+   </>
   );
 };
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: '#fbfbfd' },
- 
 
   container: { flex: 1, paddingHorizontal: 16, paddingTop: 16 },
-  sectionTitle: { fontSize: 16, fontWeight: '700', marginBottom: 12, color: '#222' },
+  sectionTitle: { fontSize: 24, fontWeight: '700', marginBottom: 12, color: '#222' },
 
   tabsRow: { flexDirection: 'row', marginBottom: 12 },
   tab: { flex: 1, alignItems: 'center', paddingVertical: 6 },

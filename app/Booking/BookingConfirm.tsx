@@ -5,17 +5,23 @@ import { profiles } from '@/data/profiles';
 import { CreateButton } from '@/hooks/Button';
 import { useUniversalDate } from '@/hooks/useUniversalDate';
 import { Image } from 'expo-image';
-import { Link, useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import React from 'react';
-import { StyleSheet, Text, useWindowDimensions, View } from 'react-native';
-
+import { StyleSheet, Text, TouchableOpacity, useWindowDimensions, View } from 'react-native';
 const BookingConfirm = () => {
+  const route = useRouter();
   const {width, height} = useWindowDimensions();
-   const{date, time, id, item} = useLocalSearchParams();
+   const{iso ,date, time, id, item} = useLocalSearchParams();
    const selectedItem = needs.find((i)=> i.id === Number(item))
    const selected = profiles.find(i => i.id === Number(id));
    const formattedDate = `${useUniversalDate(String(date)).weekday}, ${useUniversalDate(String(date)).dayNumber}`;
- const styles = StyleSheet.create({
+   const onBook = () => {
+ route.navigate({
+      pathname: "/onBoarding/Screens",
+      params: {iso: iso , formattedDate: formattedDate, time: time,id: id, item: item, shop: selected?.shop, location: selected?.location, page: 3}
+     })
+}
+   const styles = StyleSheet.create({
   screen:{
     flex: 1,
     backgroundColor: '#FFFFFF',
@@ -54,7 +60,12 @@ const BookingConfirm = () => {
   },
   link:{
     fontSize: 18,
-    textDecorationLine:'none'  }
+    textDecorationLine:'none' 
+  },
+  button:{
+    margin: 1,
+    width: "90%"
+  }
 })
    return (
     <View style={styles.screen}>
@@ -68,12 +79,9 @@ const BookingConfirm = () => {
      <ThemedText type='18px' style={styles.details}>You Booking for  {selectedItem?.name} </ThemedText>     
      <ThemedText type='18px' style={styles.details}>At {selected?.shop} </ThemedText>
      <ThemedText type='32px' style={styles.location}>At {selected?.location} </ThemedText>     
-     <Link  href={{
-      pathname: "/onBoarding/Screens",
-      params: {Date: formattedDate, time: time, item: item, shop: selected?.shop, location: selected?.location, page: 3}
-     }} asChild>
+     <TouchableOpacity style={styles.button} onPress={onBook}>
      {CreateButton("Keep Booking")}
-     </Link>
+     </TouchableOpacity>
      <ThemedText type='link' style={styles.link}>Main Page</ThemedText>
     </View>
   )

@@ -26,8 +26,7 @@ const BookingCard: React.FC<{ booking: Booking; onPressCancel?: (id: string) => 
 const styles = StyleSheet.create({
   card: {
     backgroundColor: '#fff',
-    paddingVertical: 14,
-    paddingHorizontal: 14,
+    padding: 14,
     borderRadius: 10,
     borderWidth: 1,
     borderColor: '#f0f0f0',

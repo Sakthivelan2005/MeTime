@@ -1,5 +1,6 @@
 import { ThemedText } from '@/components/themed-text';
 import { Images } from '@/config/Images';
+import { color } from '@/constants/color';
 import { Months } from '@/constants/date';
 import { disabledTimes } from '@/constants/disabledTimes';
 import { timeSlots } from '@/constants/Timeslots';
@@ -10,8 +11,9 @@ import { formatDate } from '@/hooks/formatDate';
 import { getDaysDiff } from '@/hooks/getDaysDifferent';
 import { getWeekday } from '@/hooks/getWeekDay';
 import { getYesterday } from '@/hooks/getYesterday';
+import { useDateToISO } from '@/hooks/useUniversalDate';
 import { format } from 'date-fns';
-import { Link, useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useRef, useState } from 'react';
 import {
     FlatList,
@@ -24,44 +26,58 @@ import {
     View,
 } from 'react-native';
 import CrossPlatformDatePicker from './datePicker';
-const Theme = '#ff9fb5';
+const Theme = color;
 export default function BookingScreen() {
+
+const dateToISO = useDateToISO();
+const route = useRouter();
 const {width, height} = useWindowDimensions();
 const {ProfileId, itemId} = useLocalSearchParams();
-const selected = profiles.find(i => i.id === Number(ProfileId));
 const today = format(new Date(), 'MM/dd/yyyy');
 
 const [month, setMonth] = useState(Months[Number(formatDate(String(today)).substring(0,2)) - 1]); // e.g. "December"
-console.log("Today: ", today)
 const [selectedDate, setSelectedDate] = useState(today); // e.g. "05/31/2024"
 const [selectedTime, setSelectedTime] = useState('1:30 pm');
 const [showPicker, setShowPicker] = useState(false);
 const dateListRef =  useRef<FlatList>(null);
 const [dates, setDates] = useState<{day: string, weekday: string}[]>([]);
 
+const selected = profiles.find(i => i.id === Number(ProfileId));
+console.log("select Date: ", selectedDate, "Time", selectedTime )
 useEffect(() => {
   const index = dates.findIndex(item => item.day === selectedDate);
   if (index > -1 && dateListRef.current) {
     dateListRef.current.scrollToIndex({ index, animated: true });
   }
-}, [selectedDate]);
 
-const length = getDaysDiff(selectedDate,format(getYesterday(), "MM/dd/yyyy")) > 7? getDaysDiff(selectedDate, format(getYesterday(), "MM/dd/yyyy")) : 7;
-
-useEffect(() => {
-setDates(Array.from({ length: length}, (_, i) => {
+  setDates(Array.from({ length: length}, (_, i) => {
   const dayCount = (addDays( today, i));
   return {
     day: dayCount,
     weekday:  getWeekday(dayCount), // Get weekday name
   };
 }));
-},[selectedDate]);
+}, [selectedDate]);
+
+const length = getDaysDiff(selectedDate,format(getYesterday(), "MM/dd/yyyy")) > 7? getDaysDiff(selectedDate, format(getYesterday(), "MM/dd/yyyy")) : 7;
+
 
 const handleDate = () => {
     setShowPicker(true);
 };
 
+const onBook = () => {
+    const ISO = dateToISO(selectedDate, selectedTime);
+ route.navigate({
+        pathname:"/Booking/BookingConfirm",
+        params: {
+            iso: ISO,
+            date: selectedDate,
+            time: selectedTime,
+            id: ProfileId,
+            item: itemId
+             }})
+}
 
 return (
     <ScrollView style={styles.container}>
@@ -168,18 +184,9 @@ return (
 
         {/* Book Button */}
 
-    <Link 
-    style={styles.button}
-    href={{
-        pathname:"/Booking/BookingConfirm",
-        params: {
-            date: selectedDate,
-             time: selectedTime,
-            id: selected?.id,
-            item: itemId
-             }}} asChild>     
+    <TouchableOpacity style={styles.button} onPress={onBook}  >
             {CreateButton("Book")}
-    </Link>
+    </ TouchableOpacity> 
     </ScrollView>
 );
 }
