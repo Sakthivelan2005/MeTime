@@ -4,13 +4,12 @@ import { profiles } from '@/data/profiles';
 import { Image } from 'expo-image';
 import { Link } from 'expo-router';
 import { Pressable, StyleSheet, useWindowDimensions, View } from 'react-native';
-import { empty } from './empty';
+import { empty } from '../../constants/empty';
 
 type professionalsProps = {
-  professionals: string;
   service: string | undefined;
   item: number;
-  setProfessionals: (value: string) => void;
+  setProfessionals: (value: number) => void;
 }
 export default function Professionals({service, item, setProfessionals}:professionalsProps) {
   
@@ -73,7 +72,7 @@ const Profiles =  SelectedProfile.map((i) => {
       style={styles.container}
       asChild>
       <Pressable  style={({pressed}) =>[styles.container, pressed && styles.pressed]}
-      onPress={()=>{setProfessionals(i.name)}}>
+      onPress={()=>{setProfessionals(i.id)}}>
         
         <Image source={i.profile} style={styles.image} />
          <View style={styles.star}>

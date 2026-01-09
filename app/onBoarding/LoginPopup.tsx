@@ -14,7 +14,7 @@ const LoginPopup = () => {
               Before schedule, please enter your account or create one!
             </ThemedText>
 
-            <Link href="/accounts/Login" asChild>
+            <Link href="/accounts/login" asChild>
               <Pressable
                 style={styles.loginButton}
               >
@@ -24,7 +24,7 @@ const LoginPopup = () => {
               </Pressable>
             </Link>
 
-            <Link href="/accounts/SignUp" asChild>
+            <Link href="/accounts/signup" asChild>
               <Pressable>
                 <ThemedText type="16px" style={styles.createButton}>
                   Create Account

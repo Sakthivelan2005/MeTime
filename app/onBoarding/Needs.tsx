@@ -4,7 +4,7 @@ import { needs } from '@/data/need';
 import { Image } from 'expo-image';
 import React from 'react';
 import { Pressable, StyleSheet, useWindowDimensions, View } from 'react-native';
-import { empty } from './empty';
+import { empty } from '../../constants/empty';
 
 type NeedsProps = {
   service: string;
@@ -77,7 +77,6 @@ function Needs({ service, setItem, goToPage }: NeedsProps) {
     </Pressable>
   ));
 
-console.log("sel",SelectService)
   return (
     <View style={{ flex: 1 }}>
       <ThemedText type="24px" style={styles.title}>

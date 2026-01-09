@@ -23,14 +23,13 @@ export default function OnBoarding() {
   const scrollRef = React.useRef<ScrollView>(null);
   const [service, setService] = React.useState('');
   const [item, setItem] = React.useState(0);
-  const [professionals, setProfessionals] = React.useState('');
+  const [professionals, setProfessionals] = React.useState(0);
   const [page, setPage] = React.useState(0)
  
   const isLogin = true
   const [showPopup, setShowPopup] = useState(false);
 
   const params = useLocalSearchParams();
-  console.log("service bool",service === "")
   const goToPage = (page: number) => {
     scrollRef.current?.scrollTo({ x: width * page, animated: true });
     setIndex(page);
@@ -39,7 +38,7 @@ export default function OnBoarding() {
   useEffect(()=>{
     goToPage(page);
   },[page])
-
+console.log("p page", params.page)
    useEffect(() => {
     if (params.page) {
       setPage(Number(params.page)); // Sets page to 4
@@ -99,7 +98,6 @@ export default function OnBoarding() {
       component: (
         <Professionals
           service={service}
-          professionals={professionals}
           setProfessionals={setProfessionals}
           item={item}
         />
@@ -110,9 +108,7 @@ export default function OnBoarding() {
       name: 'CheckOut',
       component: (
         <CheckoutScreen 
-        setShowPopup = {setShowPopup}
-        page={page}
-        
+        setShowPopup = {setShowPopup}  
         />
       ),
     },
@@ -178,6 +174,7 @@ export default function OnBoarding() {
       shadowRadius: 10,
       shadowOffset: { width: 0, height: -4 },
       elevation: 10,
+      zIndex: 2
     },
 
   });

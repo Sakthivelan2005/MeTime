@@ -13,7 +13,7 @@ const {width, height} = useWindowDimensions();
 
   // Once user finished onboarding in this session → go to tabs
   if (showTabs) {
-    return <Redirect href="/(tabs)/Index" />;
+    return <Redirect href="/Home" />;
   }
 
   
@@ -133,7 +133,7 @@ const Styles = StyleSheet.create({
          style={Styles.subtitle}
         type='18px'>{slides[0].subtitle}</ThemedText>
           </View>
-          <Link href="/(tabs)/Index" onPress={() => setShowTabs(true)} asChild>
+          <Link href="/Home" onPress={() => setShowTabs(true)} asChild>
            <Pressable>
           <View style={Styles.skipLink}>            
             <ThemedText

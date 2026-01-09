@@ -70,7 +70,7 @@ function Service({setService, goToPage}:ServiceProps) {
         <View style={Styles.screen}>
             <ThemedText type='24px' style={Styles.subtitle}>Please, Choose a Service:</ThemedText>
            <View style={Styles.gridContainer}>{Services}</View>
-           <Link href="/(tabs)/Index" asChild>
+           <Link href="/Home" asChild>
                        <ThemedText 
                        style={Styles.skipLink}
                        type="link" >skip</ThemedText>
