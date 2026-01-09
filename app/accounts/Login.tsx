@@ -1,33 +1,172 @@
-// src/app/index.tsx (or any screen)
 import { ThemedText } from '@/components/themed-text';
-import { useScale } from '@/hooks/useScale';
-import { StyleSheet, View } from 'react-native';
+import { ThemedView } from '@/components/themed-view';
+import { Colors } from '@/constants/Colors';
+import { useAuth } from '@/context/AuthContext';
+import { router } from 'expo-router';
+import React, { useState } from 'react';
+import {
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  TextInput,
+  TouchableOpacity,
+  useColorScheme,
+  View,
+} from 'react-native';
+import CountryPicker from './CountryPicker';
 
-export default function HomeScreen() {
-  const { width, height, scale, landscape, tall } = useScale();
+
+
+const LoginScreen = () => {
+  const {
+    phoneNumber,
+    setPhoneNumber,
+    countryCode,
+    setCountryCode,
+    flag,
+    setFlag,
+    countryName,
+    setCountryName,
+    setCurrentStep,
+    sendVerificationCode,
+  } = useAuth();
+
+  const [errors, setErrors] = useState<{ phone?: string }>({});
+  const colorScheme = useColorScheme();
+  const colors = Colors['light'];
+
+  const validatePhone = () => {
+    const cleanPhone = phoneNumber.replace(/\D/g, '');
+    if (cleanPhone.length < 10) {
+      setErrors({ phone: 'Please enter a valid phone number' });
+      return false;
+    }
+    setErrors({});
+    return true;
+  };
+
+  const handleContinue = () => {
+    if (validatePhone()) {
+      sendVerificationCode(countryCode + phoneNumber);
+      setCurrentStep('verification');
+      router.navigate('/accounts/Verification');
+    }
+  };
+
+  const formatPhoneInput = (value: string) => {
+    const cleaned = value.replace(/\D/g, '');
+    const formatted = cleaned.replace(/(\d{5})(\d{5})/, '$1 $2 $3');
+    return formatted.slice(0, 11);
+  };
 
   return (
-    <View style={styles.container}>
-      <ThemedText style={[styles.title, { fontSize: 20 * scale }]}>
-        {`w: ${width.toFixed(0)} h: ${height.toFixed(0)}`}
-      </ThemedText>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      style={{ flex: 1 }}
+    >
+      <ScrollView
+        contentContainerStyle={{ flexGrow: 1 }}
+        bounces={false}
+        showsVerticalScrollIndicator={false}
+      >
+        <ThemedView style={{ flex: 1, padding: 20, justifyContent: 'space-between' }}>
+          {/* Header */}
+          <View style={{ marginTop: 40 }}>
+           
 
-      <View
-        style={[
-          styles.box,
-          landscape ? styles.boxLandscape : styles.boxPortrait,
-          tall && styles.boxTallPhone,
-        ]}
-      />
-    </View>
+            <ThemedText style={{ marginBottom: 20 }}>
+              Please confirm your country code and enter your phone number.
+            </ThemedText>
+
+            {/* Country Picker */}
+            <ThemedText  style={{ marginBottom: 8 }}>
+              Country
+            </ThemedText>
+            <CountryPicker
+              selectedCountry={{ code: countryCode, name: countryName, phone: countryCode, flag:  flag}}
+              onSelect={(country) => {
+                setFlag(country.flag);
+                setCountryCode(country.phone);
+              }}
+            />
+
+            {/* Phone Number Input */}
+            <ThemedText  style={{ marginTop: 20, marginBottom: 8 }}>
+              Phone Number
+            </ThemedText>
+            <View style={{ flexDirection: 'row', gap: 8 }}>
+              <View
+                style={{
+                  paddingHorizontal: 12,
+                  paddingVertical: 10,
+                  borderWidth: 1,
+                  borderColor: colors.border,
+                  borderRadius: 8,
+                  backgroundColor: colors.surface,
+                  justifyContent: 'center',
+                }}
+              >
+                <ThemedText>{countryCode}</ThemedText>
+              </View>
+              <TextInput
+                placeholder="00000-00000"
+                value={phoneNumber}
+                onChangeText={(text) => setPhoneNumber(formatPhoneInput(text))}
+                keyboardType="phone-pad"
+                style={{
+                  flex: 1,
+                  paddingHorizontal: 12,
+                  paddingVertical: 10,
+                  borderWidth: 1,
+                  borderColor: errors.phone ? colors.primary : colors.border,
+                  borderRadius: 8,
+                  backgroundColor: colors.surface,
+                  fontSize: 14,
+                }}
+                placeholderTextColor={colors.textSecondary}
+              />
+            </View>
+            {errors.phone && (
+              <ThemedText
+                style={{ marginTop: 6 }}
+              >
+                {errors.phone}
+              </ThemedText>
+            )}
+          </View>
+
+          {/* Continue Button */}
+          <View style={{ marginBottom: 30 }}>
+            <TouchableOpacity
+              onPress={handleContinue}
+              style={{
+                backgroundColor: colors.primary,
+                paddingVertical: 14,
+                borderRadius: 8,
+                marginBottom: 20,
+              }}
+            >
+              <ThemedText
+                style={{ textAlign: 'center', fontWeight: '600'}}
+              >
+                Continue
+              </ThemedText>
+            </TouchableOpacity>
+
+            {/* Sign Up Link */}
+            <View style={{ flexDirection: 'row', justifyContent: 'center', gap: 4 }}>
+              <ThemedText >Don't have an account?</ThemedText>
+              <TouchableOpacity onPress={() => router.navigate('/accounts/signup')}>
+                <ThemedText style={{ fontWeight: '600' }}>
+                  Sign up
+                </ThemedText>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </ThemedView>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  title: { marginBottom: 16 },
-  box: { backgroundColor: 'tomato' },
-  boxPortrait: { width: 200, height: 100 },
-  boxLandscape: { width: 300, height: 80 },
-  boxTallPhone: { marginTop: 40 },
-});
+export default LoginScreen;
